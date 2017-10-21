@@ -5,6 +5,7 @@ app = Flask(__name__)
 mysql = MySQL()
 
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
