@@ -8,6 +8,7 @@ app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
+app.config["DEBUG"] = True
 mysql.init_app(app)
 
 conn = mysql.connect()
@@ -17,6 +18,7 @@ cursor.execute(query)
 data = []
 for item in cursor:
     data.append(item)
+
 print(data)
 
 @app.route('/')
