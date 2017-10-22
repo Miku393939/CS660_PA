@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 from flaskext.mysql import MySQL
 
 app = Flask(__name__)
@@ -25,17 +25,17 @@ mysql.init_app(app)
 def index():
     return render_template('index.html')
 
-@app.route('/register/', methods = ['POST','GET'])
+@app.route('/register/', methods = ["GET","POST"])
 def register():
-    if request.method == 'GET':
-        print("get~")
-        return render_template('register.html')
-    if request.method == 'POST':
-        registerUserName = request.form['username']
-        registerPassword = request.form['password']
-        mysql.cursor.execute('Insert into USER (FNAME,PASSWORD) VALUES (%s,%s)',(registerUserName,registerPassword))
-        mysql.cursor.commit()
-        print("finished~")
+    if request.method == "GET":
+        print("get!")
+        return render_template("index.html")
+    registerUserName = request.form["username"]
+    registerPassword = request.form["password"]
+    mysql.cursor.execute('Insert into USER (FNAME,PASSWORD) VALUES (%s,%s)',(registerUserName,registerPassword))
+    mysql.cursor.commit()
+    print("finished!")
+    return render_template("index.html")
 
 
 
