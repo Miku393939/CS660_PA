@@ -5,12 +5,13 @@
     <title>User Register</title>
 </head>
 <body>
-    <form action = "." method="post">
+    <form action = "{{ url_for('register_post') }}" method = 'POST'>
         User Name:<br>
         <input type = "text" name = "username"><br>
         Password:<br>
         <input type = "password" name = "password">
         <input type = "submit" name = "submit">
+
     </form>
 </body>
 </html>
