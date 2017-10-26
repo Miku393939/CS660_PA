@@ -143,6 +143,36 @@ def login():
 
 
 
+@app.route('/upload', methods=['GET', 'POST'])
+@flask_login.login_required
+def upload_file():
+    if request.method == 'POST':
+        uid = getUserIdFromEmail(flask_login.current_user.id)
+        imgfile = request.files['photo']
+        caption = request.form.get('caption')
+        print(caption)
+        photo_data = base64.standard_b64encode(imgfile.read())
+        cursor = conn.cursor()
+        #cursor.execute(
+        #    "INSERT INTO Photo (imgdata, user_id, caption) VALUES ('photo_data', 'uid', 'caption')")
+        cursor.execute("INSERT INTO Photo (data, uid, caption) VALUES (%s, %s, %s)",
+                       (photo_data, uid, caption))
+        #cursor.execute("INSERT INTO Photo (imgdata, user_id, caption) VALUES (?, ?, ?)", (photo_data, uid, caption))
+        conn.commit()
+        return render_template('hello.html', name=flask_login.current_user.id, message='Photo uploaded!',
+                               photos=getUsersPhotos(uid))
+    # The method is GET so we return a  HTML form to upload the a photo.
+    else:
+        return render_template('upload.html')
+
+
+
+def getUsersPhotos(uid):
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT data, aid, caption FROM Photo WHERE user_id = 'uid'")
+    return cursor.fetchall()  # NOTE list of tuples, [(imgdata, pid), ...]
+
 
 def getUserIdFromEmail(email):
     cursor = conn.cursor()
