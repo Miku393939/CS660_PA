@@ -1,7 +1,14 @@
-from flask import Flask, render_template, request, redirect, url_for
+import flask
+from flask import Flask, Response, request, render_template, redirect, url_for
 from flaskext.mysql import MySQL
+import flask.ext.login as flask_login
+
+# for image uploading
+# from werkzeug import secure_filename
+import os, base64
 
 app = Flask(__name__)
+app.secret_key = "bakakitty"
 mysql = MySQL()
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -11,31 +18,138 @@ app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
 mysql.init_app(app)
 
-# conn = mysql.connect()
-# cursor = conn.cursor()
-# query = 'select * from USER'
-# cursor.execute(query)
-# data = []
-# for item in cursor:
-#     data.append(item)
+login_manager = flask_login.LoginManager()
+login_manager.init_app(app)
 
-# print(data)
+conn = mysql.connect()
+cursor = conn.cursor()
+cursor.execute("SELECT email FROM User")
+users = cursor.fetchall()
+
+
+class User(flask_login.UserMixin):
+    pass
+
+def getUserList():
+    cursor = conn.cursor()
+    cursor.execute("SELECT email FROM User")
+    return cursor.fetchall()
+
+@login_manager.user_loader
+def user_loader(email):
+    users = getUserList()
+    if not (email) or email not in str(users):
+        return
+    user = User()
+    user.id = email
+    return user
+
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/register/', methods = ["GET","POST"])
+def isEmailUnique(email):
+    # use this to check if a email has already been registered
+    cursor = conn.cursor()
+    if cursor.execute("SELECT email FROM User WHERE email = email"):
+        # this means there are greater than zero entries with that email
+        return False
+    else:
+        return True
+
+@app.route("/register/", methods = ["GET"])
 def register():
-    if request.method == "GET":
-        print("get!")
-        return render_template("index.html")
-    registerUserName = request.form["username"]
-    registerPassword = request.form["password"]
-    mysql.cursor.execute('Insert into USER (FNAME,PASSWORD) VALUES (%s,%s)',(registerUserName,registerPassword))
-    mysql.cursor.commit()
-    print("finished!")
-    return render_template("index.html")
+    print("get!")
+    return render_template("register.html")
+
+# @app.route("/register", methods = ["POST"])
+# def register_post():
+#     registerUserName = request.form.get('username')
+#     registerPassword = request.form.get('password')
+#     cursor = conn.cursor()
+#     #Need to add some more information
+#     query = "Insert into User (email,password,FNAME,LNAME)" "VALUES ('{0}','{1}','WAR3','WAR4')".format(registerUserName,registerPassword)
+#     #Need to add some more information
+#     # query = "Insert into User (email,password) VALUES (%s,%s)", (registerUserName, registerPassword)
+#     print(query)
+#     cursor.execute(query)
+#     conn.commit()
+#     print("finished!")
+#     return render_template("register.html")
+
+@app.route("/register/", methods=['POST'])
+def register_user():
+    try:
+        fname = request.form.get('fname')
+        lname = request.form.get('lname')
+        email = request.form.get('email')
+        dob = request.form.get('dob')
+        hometown = request.form.get('hometown')
+        gender = request.form.get('gender')
+        password = request.form.get('password')
+    except:
+        print("register failed: couldn't find all tokens")
+        return flask.redirect(flask.url_for('register'))
+    cursor = conn.cursor()
+    test = isEmailUnique()
+
+    if test:
+        print(cursor.execute("INSERT INTO User (fname,lname,email,dob,hometown,gender,password) "
+                             "VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')".format(fname, lname, email, dob,
+                                                                                         hometown, gender, password)))
+        conn.commit()
+        # log user in
+        user = User()
+        user.id = email
+        flask_login.login_user(user)
+
+        # createDefaultAlbum(uid)
+        #
+        # cursor.execute("INSERT INTO Albums(aname,)")
+
+        return render_template('index.html', name=fname, message='Account Created!')
+    else:
+        print("couldn't find all tokens")
+        return flask.redirect(flask.url_for('index'))
+
+
+def createDefaultAlbum(uid):
+    query = "INSERT INTO Albums(aname, uid) VALUES ('default','{0}')"
+    print(query.format(uid))  # optional printing out in your terminal
+    cursor = conn.cursor()
+    cursor.execute(query.format(uid))
+    return
+
+@app.route("/login/", methods = ["GET","POST"])
+def login():
+    if flask.request.method == 'GET':
+        return render_template("login.html")
+    email = flask.request.form['email']
+    cursor = conn.cursor()
+    # check if email is registered
+    if cursor.execute("SELECT password FROM User WHERE email=email"):
+        data = cursor.fetchall()
+        pwd = str(data[0][0])
+        if flask.request.form['password'] == pwd:
+            user = User()
+            user.id = email
+            flask_login.login_user(user)
+            return flask.redirect(flask.url_for('index'))
+
+    # information did not match
+    return "<a href='/login'>Try again</a>\
+    			</br><a href='/register'>or make an account</a>"
+
+
+
+
+def getUserIdFromEmail(email):
+    cursor = conn.cursor()
+    cursor.execute("SELECT UID FROM User WHERE email = email")
+    return cursor.fetchone()[0]
+
+
 
 
 
