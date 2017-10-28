@@ -58,7 +58,7 @@ def isEmailUnique(email):
     else:
         return True
 
-@app.route("/register/", methods = ["GET"])
+@app.route("/register/", methods = ['GET'])
 def register():
     print("get!")
     return render_template("register.html")
@@ -92,9 +92,9 @@ def register_user():
         print("register failed: couldn't find all tokens")
         return flask.redirect(flask.url_for('register'))
     cursor = conn.cursor()
-    test = isEmailUnique()
+    test = isEmailUnique(email)
 
-    if test:
+    if 1:
         print(cursor.execute("INSERT INTO User (fname,lname,email,dob,hometown,gender,password) "
                              "VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')".format(fname, lname, email, dob,
                                                                                          hometown, gender, password)))
@@ -102,11 +102,14 @@ def register_user():
         # log user in
         user = User()
         user.id = email
+        album_name = "Album of "+ fname + " " + lname   #set album name “Album of FirstName LastName”
         flask_login.login_user(user)
 
-        # createDefaultAlbum(uid)
-        #
-        # cursor.execute("INSERT INTO Albums(aname,)")
+        uid = getUserIdFromEmail(flask_login.current_user.id)
+        createDefaultAlbum(uid,album_name)#auto create the default album when user register
+
+        # cursor.execute("INSERT INTO ALBUM (name,uid)""VALUES ('{0}','{1}')".format(album_name, uid))
+
 
         return render_template('index.html', name=fname, message='Account Created!')
     else:
@@ -114,11 +117,12 @@ def register_user():
         return flask.redirect(flask.url_for('index'))
 
 
-def createDefaultAlbum(uid):
-    query = "INSERT INTO Albums(aname, uid) VALUES ('default','{0}')"
+def createDefaultAlbum(uid, album_name):
+    query = "INSERT INTO ALBUM (name,uid)""VALUES ('{0}','{1}')".format(album_name, uid)
     print(query.format(uid))  # optional printing out in your terminal
     cursor = conn.cursor()
     cursor.execute(query.format(uid))
+    conn.commit()
     return
 
 @app.route("/login/", methods = ["GET","POST"])
@@ -143,7 +147,7 @@ def login():
 
 
 
-@app.route('/upload', methods=['GET', 'POST'])
+@app.route('/upload/', methods=['GET', 'POST'])
 @flask_login.login_required
 def upload_file():
     if request.method == 'POST':
