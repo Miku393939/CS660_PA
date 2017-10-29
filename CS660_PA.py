@@ -146,6 +146,31 @@ def login():
     			</br><a href='/register'>or make an account</a>"
 
 
+@app.route('/friendship', methods=['POST'])
+@flask_login.login_required
+def friend_add():
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    friend_uid = request.form.get('friend_id')
+    cursor = conn.cursor()
+
+    query = "INSERT INTO FRIENDSHIP (uid1,uid2)""VALUES ('{0}','{1}')".format(uid, friend_uid)
+    cursor.execute(query)
+    conn.commit()
+    print("Added friend successfully")
+    return flask.redirect(flask.url_for('index'))
+
+
+@app.route('/friendship', methods=['GET'])
+@flask_login.login_required
+def friend():
+    return render_template("friendship.html")
+
+
+
+
+
+
+
 
 @app.route('/upload/', methods=['GET', 'POST'])
 @flask_login.login_required
