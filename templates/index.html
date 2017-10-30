@@ -2,15 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CS660 Project</title>
+    <title>SHARESHARE</title>
+    <link rel="stylesheet" href="../static/static.css">
 </head>
 <body>
-    <div>
-        <h1>HELLO!</h1>
+    <div id="title-bar">
+        <div class="title">SHARESHARE
+            <div class="subtitle">Home</div>
+        </div>
+        <div id="login" class="option">
         <a href={{ url_for("login") }}>Login</a>
-        <a href={{ url_for("register") }}>Register</a>
-        <a href={{ url_for("friend") }}>Friend</a>
-        <a href={{ url_for("logout") }}>Logout</a>
+        </div>
+        <div id="register" class="option">
+            <a href={{ url_for("register") }}>Register</a>
+        </div>
+        <div id="logout" class="option">
+            <a href={{ url_for("logout") }}>Log-out</a>
+        </div>
+    </div>
+    <div id="menu-bar">
+        <ul>
+            <li>
+                <a href={{ url_for("index") }}>Home</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>My Photos</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>Friends</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>My Profile</a>
+            </li>
+        </ul>
+
     </div>
 </body>
 </html>

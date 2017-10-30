@@ -2,16 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>SHARESHARE</title>
+    <link rel="stylesheet" href="../static/static.css">
 </head>
 <body>
+    <div id="title-bar">
+        <div class="title">SHARESHARE
+            <div class="subtitle">Login</div>
+        </div>
+        <div id="login" class="option">
+        <a href={{ url_for("login") }}>Login</a>
+        </div>
+        <div id="register" class="option">
+            <a href={{ url_for("register") }}>Register</a>
+        </div>
+        <div id="logout" class="option">
+            <a href={{ url_for("index") }}>Log-out</a>
+        </div>
+    </div>
+    <div id="menu-bar">
+        <ul>
+            <li>
+                <a href={{ url_for("index") }}>Home</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>My Photos</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>Friends</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>My Profile</a>
+            </li>
+        </ul>
+
+    </div>
     <form action="{{ url_for("login") }}", method = "POST">
             Email:<br>
             <input type = "text" name = "email"><br>
             Password:<br>
             <input type = "password" name = "password">
             <input type = "submit" name = "submit">
-        </form>
-    		   <a href='index.html'>Home</a>
+    </form>
+    <a href='{{ url_for("index") }}'>Home</a>
 </body>
 </html>
