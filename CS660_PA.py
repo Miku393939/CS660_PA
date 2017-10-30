@@ -51,34 +51,12 @@ def user_loader(email):
 def index():
     return render_template('index.html')
 
-def isEmailUnique(email):
-    # use this to check if a email has already been registered
-    cursor = conn.cursor()
-    if cursor.execute("SELECT email FROM User WHERE email = '{0}'".format(email)):
-        # this means there are greater than zero entries with that email
-        return False
-    else:
-        return True
 
-@app.route("/register/", methods = ['GET'])
+@app.route("/register/", methods=['GET'])
 def register():
     print("get!")
     return render_template("register.html")
 
-# @app.route("/register", methods = ["POST"])
-# def register_post():
-#     registerUserName = request.form.get('username')
-#     registerPassword = request.form.get('password')
-#     cursor = conn.cursor()
-#     #Need to add some more information
-#     query = "Insert into User (email,password,FNAME,LNAME)" "VALUES ('{0}','{1}','WAR3','WAR4')".format(registerUserName,registerPassword)
-#     #Need to add some more information
-#     # query = "Insert into User (email,password) VALUES (%s,%s)", (registerUserName, registerPassword)
-#     print(query)
-#     cursor.execute(query)
-#     conn.commit()
-#     print("finished!")
-#     return render_template("register.html")
 
 @app.route("/register/", methods=['POST'])
 def register_user():
@@ -118,14 +96,6 @@ def register_user():
         print("couldn't find all tokens")
         return render_template("error.html")
 
-
-def createDefaultAlbum(uid, album_name):
-    query = "INSERT INTO ALBUM (name,uid)""VALUES ('{0}','{1}')".format(album_name, uid)
-    print(query.format(uid))  # optional printing out in your terminal
-    cursor = conn.cursor()
-    cursor.execute(query.format(uid))
-    conn.commit()
-    return
 
 @app.route("/login/", methods = ["GET","POST"])
 def login():
@@ -170,13 +140,7 @@ def friend():
     uid = getUserIdFromEmail(flask_login.current_user.id)
     cursor.execute("select email from user where uid in(select uid2 from friendship where uid1 = '{0}')".format(uid))
     friends_list = cursor.fetchall()
-    return render_template("friendship.html",friends_list = friends_list)
-
-
-
-
-
-
+    return render_template("friendship.html", friends_list=friends_list)
 
 
 @app.route('/upload/', methods=['GET', 'POST'])
@@ -205,6 +169,22 @@ def upload_file():
         return render_template('upload.html')
 
 
+@app.route('/MyProfile')
+def my_profile():
+    current_user = flask_login.current_user
+    cursor = conn.cursor()
+
+    return render_template('MyProfile.html')
+
+
+@app.route('/Logout')
+def logout():
+    flask_login.logout_user()
+    return render_template('index.html')
+
+
+
+
 
 def getUsersPhotos(uid):
     cursor = conn.cursor()
@@ -218,14 +198,24 @@ def getUserIdFromEmail(email):
     cursor.execute("SELECT UID FROM User WHERE email = '{0}'".format(email))
     return cursor.fetchone()[0]
 
-@app.route('/Logout')
-def logout():
-    flask_login.logout_user()
-    return render_template('index.html')
+
+def createDefaultAlbum(uid, album_name):
+    query = "INSERT INTO ALBUM (name,uid)""VALUES ('{0}','{1}')".format(album_name, uid)
+    print(query.format(uid))  # optional printing out in your terminal
+    cursor = conn.cursor()
+    cursor.execute(query.format(uid))
+    conn.commit()
+    return
 
 
-
-
+def isEmailUnique(email):
+    # use this to check if a email has already been registered
+    cursor = conn.cursor()
+    if cursor.execute("SELECT email FROM User WHERE email = '{0}'".format(email)):
+        # this means there are greater than zero entries with that email
+        return False
+    else:
+        return True
 
 
 if __name__ == '__main__':
