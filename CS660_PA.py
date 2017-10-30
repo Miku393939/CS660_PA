@@ -131,8 +131,9 @@ def login():
         return render_template("login.html")
     email = flask.request.form['email']
     cursor = conn.cursor()
+    query = "SELECT password FROM User WHERE email = '{0}'".format(email)
     # check if email is registered
-    if cursor.execute("SELECT password FROM User WHERE email=email"):
+    if cursor.execute(query):
         data = cursor.fetchall()
         pwd = str(data[0][0])
         if flask.request.form['password'] == pwd:
