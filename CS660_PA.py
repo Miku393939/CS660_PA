@@ -12,7 +12,7 @@ app.secret_key = "bakakitty"
 mysql = MySQL()
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -26,6 +26,8 @@ cursor = conn.cursor()
 cursor.execute("SELECT email FROM User")
 users = cursor.fetchall()
 
+UPLOAD_FOLDER = 'static/upload'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class User(flask_login.UserMixin):
     pass
@@ -182,17 +184,20 @@ def friend():
 def upload_file():
     if request.method == 'POST':
         uid = getUserIdFromEmail(flask_login.current_user.id)
+        aid = 0#NEED ALBUM MODEL---------------------------------------------------!
         imgfile = request.files['photo']
         caption = request.form.get('caption')
+        imgtype = imgfile.mimetype.split("/")
         print(caption)
-        photo_data = base64.standard_b64encode(imgfile.read())
+        photo_data = "static/upload/"+caption + '.' + imgtype[1]
+        print(photo_data)
         cursor = conn.cursor()
-        #cursor.execute(
-        #    "INSERT INTO Photo (imgdata, user_id, caption) VALUES ('photo_data', 'uid', 'caption')")
-        cursor.execute("INSERT INTO Photo (data, uid, caption) VALUES (%s, %s, %s)",
-                       (photo_data, uid, caption))
-        #cursor.execute("INSERT INTO Photo (imgdata, user_id, caption) VALUES (?, ?, ?)", (photo_data, uid, caption))
+
+        cursor.execute("INSERT INTO Photo (data, aid, caption) VALUES (%s, %s, %s)",
+                       (photo_data, aid, caption))#---------------------------------------!
+
         conn.commit()
+        imgfile.save(os.path.join(app.config['UPLOAD_FOLDER'], caption + '.' + imgtype[1]))
         return render_template('hello.html', name=flask_login.current_user.id, message='Photo uploaded!',
                                photos=getUsersPhotos(uid))
     # The method is GET so we return a  HTML form to upload the a photo.
