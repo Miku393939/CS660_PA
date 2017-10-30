@@ -44,7 +44,10 @@
 
     Your Friends are:
     <hr/>
-    {% print(friends_list) %}
+    {% for i in friends_list %}
+    {% print(i[0])%}
+        <br/>
+    {% endfor %}
     <hr/>
     <h1>Add Friend</h1>
     <hr/>

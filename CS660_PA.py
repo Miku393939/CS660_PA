@@ -162,6 +162,9 @@ def friend():
     uid = getUserIdFromEmail(flask_login.current_user.id)
     cursor.execute("select email from user where uid in(select uid2 from friendship where uid1 = '{0}')".format(uid))
     friends_list = cursor.fetchall()
+    # for friend in friends_list:
+    #     print(friend[0])
+
     return render_template("friendship.html", friends_list=friends_list)
 
 
