@@ -164,8 +164,12 @@ def friend():
     friends_list = cursor.fetchall()
     # for friend in friends_list:
     #     print(friend[0])
+    cursor.execute("select DISTINCT email from user where uid in("
+                       "select DISTINCT uid2 from friendship where uid1 in ("
+                            "SELECT DISTINCT uid2 from friendship where uid1 = '{0}') UNION SELECT uid1 FROM friendship WHERE uid2 in (SELECT DISTINCT uid2 FROM friendship where uid1 = '{1}')) and uid <> '{2}'".format(uid,uid,uid))
+    recommanded_friend_list = cursor.fetchall()
 
-    return render_template("friendship.html", friends_list=friends_list)
+    return render_template("friendship.html", friends_list=friends_list,recommanded_friend_list = recommanded_friend_list)
 
 
 def allowed_file(filename):
