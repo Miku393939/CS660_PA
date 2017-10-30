@@ -44,8 +44,8 @@
 
     Your Friends are:
     <hr/>
-    {% for i in friends_list %}
-    {% print(i[0])%}
+    {% for my_friends in friends_list %}
+    {% print(my_friends[0])%}
         <br/>
     {% endfor %}
     <hr/>
@@ -57,6 +57,14 @@
         <input type = "text" name = "friend_id"><br>
         <input type = "submit" name = "submit">
     </form>
+    <hr/>
+    Your Recommanded friends are:
+    <hr/>
+    {% for recom_friend in recommanded_friend_list %}
+    {% print(recom_friend[0]) %}
+        <br/>
+    {% endfor %}
+    <hr/>
 
 </body>
 </html>
