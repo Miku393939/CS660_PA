@@ -68,3 +68,19 @@ body{
     font-weight: bold;
     color: black;
 }
+
+
+/*Main*/
+.main ul{
+    list-style: none;
+}
+.main ul>li{
+    padding: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    display: block;
+}
+.main ul>li>a{
+    font-weight: normal;
+    font-style: italic;
+}

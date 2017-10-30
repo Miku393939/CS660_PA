@@ -12,7 +12,7 @@ app.secret_key = "bakakitty"
 mysql = MySQL()
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -172,15 +172,25 @@ def upload_file():
 @app.route('/MyProfile')
 def my_profile():
     current_user = flask_login.current_user
-    cursor = conn.cursor()
 
-    return render_template('MyProfile.html')
+    if current_user.is_authenticated:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM USER Where uid = '{0}'".format(getUserIdFromEmail(current_user.id)))
+        profile = cursor.fetchall()
+        profile = profile[0]
+        msg = "Hello "+profile[6]+" !!!"
+
+        return render_template('MyProfile.html', loggedin=True, msg=msg, profile=profile)
+    else:
+        msg = "Hello, you are not logged in yet!"
+        return render_template('MyProfile.html', loggedin=False, msg=msg)
+
 
 
 @app.route('/Logout')
 def logout():
     flask_login.logout_user()
-    return render_template('index.html')
+    return index()
 
 
 

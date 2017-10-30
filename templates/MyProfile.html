@@ -17,7 +17,7 @@
             <a href={{ url_for("register") }}>Register</a>
         </div>
         <div id="logout" class="option">
-            <a href={{ url_for("index") }}>Log-out</a>
+            <a href={{ url_for("logout") }}>Log-out</a>
         </div>
     </div>
     <div id="menu-bar">
@@ -35,10 +35,25 @@
             </li>
 
             <li>
-                <a href={{ url_for("friend") }}>My Profile</a>
+                <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
         </ul>
-
     </div>
+    <div class="main">
+        <h2>{% print(msg) %}</h2>
+        <div id="myprofile">
+            {% if loggedin  %}
+                <ul>
+                <li>First Name: <a>{% print(profile[6]) %}</a></li>
+                <li>Last Name: <a>{% print(profile[7]) %}</a></li>
+                <li>Email: <a>{% print(profile[2]) %}</a></li>
+                <li>Gender: <a>{% print(profile[1]) %}</a></li>
+                <li>Date of Birth: <a>{% print(profile[4]) %}</a></li>
+                <li>Hometown: <a>{% print(profile[5]) %}</a></li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
 </body>
 </html>
