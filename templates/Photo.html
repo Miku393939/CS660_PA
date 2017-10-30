@@ -27,7 +27,7 @@
             </li>
 
             <li>
-                <a href={{ url_for("friend") }}>My Photos</a>
+                <a href={{ url_for("my_photo") }}>My Photos</a>
             </li>
 
             <li>
@@ -38,7 +38,28 @@
                 <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
         </ul>
-
     </div>
+
+    <div class="main photo">
+        <div id="album">Albums:
+            <ul id="album-list">
+                {% for album in alist %}
+                    <li>{{ album }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="photoButtoms">
+            <div></div>
+            <div>
+                <button id="upload">Upload Photo</button>
+            </div>
+            <div>
+                <button id="createAlbum" onclick="location.href={{ url_for("create_album") }}">Create New Album</button>
+            </div>
+            <div></div>
+        </div>
+    </div>
+
 </body>
+
 </html>

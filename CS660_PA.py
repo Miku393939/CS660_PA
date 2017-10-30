@@ -82,7 +82,7 @@ def register_user():
         # log user in
         user = User()
         user.id = email
-        album_name = "Album of "+ fname + " " + lname   #set album name “Album of FirstName LastName”
+        album_name = "Default"   #set album name “default”
         flask_login.login_user(user)
 
         uid = getUserIdFromEmail(flask_login.current_user.id)
@@ -90,17 +90,16 @@ def register_user():
 
         # cursor.execute("INSERT INTO ALBUM (name,uid)""VALUES ('{0}','{1}')".format(album_name, uid))
 
-
         return render_template('index.html', name=fname, message='Account Created!')
     else:
         print("couldn't find all tokens")
         return render_template("error.html")
 
 
-@app.route("/login/", methods = ["GET","POST"])
+@app.route("/login/", methods=["GET","POST"])
 def login():
     if flask.request.method == 'GET':
-        return render_template("login.html")
+        return render_template("login.html", msg="")
     email = flask.request.form['email']
     cursor = conn.cursor()
     query = "SELECT password FROM User WHERE email = '{0}'".format(email)
@@ -114,9 +113,20 @@ def login():
             flask_login.login_user(user)
             return flask.redirect(flask.url_for('index'))
 
-    # information did not match
-    return "<a href='/login'>Try again</a>\
-    			</br><a href='/register'>or make an account</a>"
+    return render_template("login.html", msg="Invalid credentials!!!")
+
+
+@app.route("/createAlbum/", methods=["GET", "POST"])
+def create_album():
+    if flask.request.method == 'GET':
+        return render_template("Album.html")
+    aname = flask.request.form['name']
+    cursor = conn.cursor()
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    query = "INSERT INTO Album(name,uid) VALUES ('{0}','{1}')".format(aname, uid)
+    cursor.execute(query)
+    conn.commit()
+    return flask.redirect(flask.url_for("my_photo"))
 
 
 @app.route('/friendship', methods=['POST'])
@@ -148,7 +158,7 @@ def friend():
 def upload_file():
     if request.method == 'POST':
         uid = getUserIdFromEmail(flask_login.current_user.id)
-        aid = 0#NEED ALBUM MODEL---------------------------------------------------!
+        aid = 0
         imgfile = request.files['photo']
         caption = request.form.get('caption')
         imgtype = imgfile.mimetype.split("/")
@@ -158,7 +168,7 @@ def upload_file():
         cursor = conn.cursor()
 
         cursor.execute("INSERT INTO Photo (data, aid, caption) VALUES (%s, %s, %s)",
-                       (photo_data, aid, caption))#---------------------------------------!
+                       (photo_data, aid, caption))
 
         conn.commit()
         imgfile.save(os.path.join(app.config['UPLOAD_FOLDER'], caption + '.' + imgtype[1]))
@@ -167,6 +177,19 @@ def upload_file():
     # The method is GET so we return a  HTML form to upload the a photo.
     else:
         return render_template('upload.html')
+
+
+@app.route('/MyPhoto')
+def my_photo():
+    current_user = flask_login.current_user
+    if current_user.is_authenticated:
+        albumlist = getUsersAlbums(getUserIdFromEmail(current_user.id))
+        alist = []
+        for i in range(len(albumlist)):
+            alist.append(albumlist[i][0])
+        return render_template('Photo.html', alist=alist)
+    else:
+        return render_template('login.html')
 
 
 @app.route('/MyProfile')
@@ -193,7 +216,10 @@ def logout():
     return index()
 
 
-
+def getUsersAlbums(uid):
+    cursor = conn.cursor()
+    cursor.execute("SELECT name From album where uid ='{0}'".format(uid))
+    return cursor.fetchall()
 
 
 def getUsersPhotos(uid):

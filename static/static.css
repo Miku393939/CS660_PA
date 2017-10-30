@@ -84,3 +84,37 @@ body{
     font-weight: normal;
     font-style: italic;
 }
+.msg{
+    margin: 10px 0;
+}
+
+/*photo*/
+#album{
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 50px;
+}
+#album >ul{
+    margin-top: 5px;
+}
+.photo #photoButtoms{
+    width: 100%;
+    margin: 100px 0;
+}
+#photoButtoms div{
+    width: 24%;
+    text-align: center;
+    float: none;
+    display: inline-block;
+}
+#photoButtoms div>button{
+    padding: 15px;
+    height: 60px;
+    font-size: 20px;
+    background-color: #7395ae;
+    border: none;
+    border-radius: 5px;
+}
+#photoButtoms div>button:hover{
+    background-color: #557a95;
+}
