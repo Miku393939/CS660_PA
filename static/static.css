@@ -90,6 +90,7 @@ body{
 .pics{
     padding: 30px;
     width: 100%;
+
 }
 .pics .picframe{
     padding: 2%;
@@ -100,10 +101,10 @@ body{
     background-color: darkgray;
     border-radius: 15px;
     text-align: center;
-    margin: 10px 2%;
+    margin: 10px 1%;
 }
 .pic img{
-    width: 75%;
+    width: 80%;
 }
 .cap{
     font-style: italic;
@@ -149,4 +150,14 @@ body{
     width: inherit;
     display: block;
     margin: 15px;
+}
+
+.addition div{
+    text-align: left;
+}
+.addition input[type='submit']{
+    width: 30%;
+}
+.addition input[type='text']{
+    width: 60%;
 }

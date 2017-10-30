@@ -61,7 +61,7 @@ def index():
                    " join photo as p on a.aid = p.aid"
                    " join user as u on a.uid = u.uid")
     pics = cursor.fetchall()
-    return render_template('index.html', pics=pics)
+    return render_template('index.html', pics=pics, like="")
 
 
 @app.route("/register/", methods=['GET'])
