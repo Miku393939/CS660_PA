@@ -15,7 +15,7 @@ mysql = MySQL()
 
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Helloworld108'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -29,7 +29,7 @@ cursor = conn.cursor()
 cursor.execute("SELECT email FROM User")
 users = cursor.fetchall()
 
-UPLOAD_FOLDER = '/static/upload'
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)),'static/upload')
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
