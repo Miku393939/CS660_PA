@@ -1,5 +1,6 @@
 import flask
 from flask import Flask,  flash, Response, request, render_template, redirect, url_for
+from os.path import abspath, realpath
 from flaskext.mysql import MySQL
 import flask.ext.login as flask_login
 from werkzeug.utils import secure_filename
@@ -15,7 +16,7 @@ mysql = MySQL()
 
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Helloworld108'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -29,7 +30,7 @@ cursor = conn.cursor()
 cursor.execute("SELECT email FROM User")
 users = cursor.fetchall()
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)),'static/upload')
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static/upload')
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -190,23 +191,24 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            caption = request.form.get('caption')
+            aid = request.form.get('album')
+            path= "/static/upload/"+filename
+
+            cursor = conn.cursor()
+            query = "INSERT INTO photo (caption,data,aid)""VALUES ('{0}','{1}','{2}')".format(caption, path, aid)
+            cursor.execute(query)
+            conn.commit()
+
             return redirect(url_for('my_photo'))
 
-        uid = getUserIdFromEmail(flask_login.current_user.id)
-        aid = 0
-
-        caption = request.form.get('caption')
-        imgtype = file.mimetype.split("/")
-        print(caption)
-        photo_data = "/static/upload/"+caption + '.' + imgtype[1]
-        print(photo_data)
-        cursor = conn.cursor()
-        conn.commit()
-
-
-    # The method is GET so we return a  HTML form to upload the a photo.
     else:
-        return render_template('upload.html')
+        albumlist = getUsersAlbumsid(getUserIdFromEmail(flask_login.current_user.id))
+        alist = []
+        for i in range(len(albumlist)):
+            alist.append(albumlist[i])
+        return render_template('upload.html', alist=alist)
 
 
 @app.route('/MyPhoto')
@@ -249,6 +251,11 @@ def logout():
 def getUsersAlbums(uid):
     cursor = conn.cursor()
     cursor.execute("SELECT name From album where uid ='{0}'".format(uid))
+    return cursor.fetchall()
+
+def getUsersAlbumsid(uid):
+    cursor = conn.cursor()
+    cursor.execute("SELECT name,aid From album where uid ='{0}'".format(uid))
     return cursor.fetchall()
 
 

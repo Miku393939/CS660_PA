@@ -16,7 +16,7 @@ body{
     font-size: 40px;
 }
 #title-bar .title{
-    width:78%;
+    width:69%;
     font-weight: bold;
 }
 #title-bar .subtitle{
@@ -24,7 +24,7 @@ body{
     font-weight: bold;
 }
 #title-bar .option{
-    width:5%;
+    width:8%;
     text-align: center;
     margin: 0;
     font-size: 15px;
@@ -139,4 +139,14 @@ body{
 }
 #photoButtoms div>button:hover{
     background-color: #557a95;
+}
+
+.uploadPhoto{
+    font-size: 20px;
+    float:left;
+}
+.uploadPhoto div{
+    width: inherit;
+    display: block;
+    margin: 15px;
 }
