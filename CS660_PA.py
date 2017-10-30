@@ -1,5 +1,6 @@
 import flask
 from flask import Flask,  flash, Response, request, render_template, redirect, url_for
+from os.path import abspath, realpath
 from flaskext.mysql import MySQL
 import flask.ext.login as flask_login
 from werkzeug.utils import secure_filename
@@ -183,6 +184,7 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
             return redirect(url_for('my_photo'))
 
         uid = getUserIdFromEmail(flask_login.current_user.id)
