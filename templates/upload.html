@@ -5,10 +5,10 @@
     <title>SHARESHARE</title>
     <link rel="stylesheet" href="../static/static.css">
 </head>
-<body>
+    <body>
     <div id="title-bar">
         <div class="title">SHARESHARE
-            <div class="subtitle">Register</div>
+            <div class="subtitle">Upload photo</div>
         </div>
         <div id="login" class="option">
         <a href={{ url_for("login") }}>Login</a>
@@ -38,25 +38,29 @@
                 <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
         </ul>
-
     </div>
-    <hr/>
-    <form action = "{{ url_for('register_user') }}" method="post">
-        Email:<br>
-        <input type = "text" name = "email"><br>
-        Password:<br>
-        <input type = "password" name = "password"><br>
-        First name:<br>
-        <input type = "text" name = "fname"><br>
-        Last name:<br>
-        <input type = "text" name = "lname"><br>
-        Date of birth: (yyyy/mm/dd)<br>
-        <input type = "text" name = "dob"><br>
-        Hometown:<br>
-        <input type = "text" name = "hometown"><br>
-        Gender:<br>
-        <input type = "text" name = "gender"><br>
-        <input type = "submit" name = "submit">
-    </form>
-</body>
+        <form method="POST" class="uploadPhoto" enctype="multipart/form-data" action={{ url_for("upload_file") }}>
+            <div>
+                <label for="photo">Select photo:</label>
+                <input type="file" name="file" required='true' /><br />
+            </div>
+            <div>
+                <label for="caption">Please caption:</label>
+                <input type="text" name="caption" required='true' /><br />
+            </div>
+            <div>
+                <label for="album">Album:</label>
+                <select class="selectA" name="album">
+                    {% for album in alist %}
+                        <option value="{{ album[1] }}">{{ album[0] }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <input type="submit" value="Upload" />
+            </div>
+
+        </form>
+
+    </body>
 </html>

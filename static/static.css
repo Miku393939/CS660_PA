@@ -1,0 +1,163 @@
+body{
+    padding: 0;
+    margin:0;
+    font-family: "Roboto",sans-serif;
+}
+
+
+
+/*Title Bar*/
+#title-bar{
+    background-color: #557a95;
+}
+#title-bar div{
+    margin:10px 10px;
+    display: inline-block;
+    font-size: 40px;
+}
+#title-bar .title{
+    width:69%;
+    font-weight: bold;
+}
+#title-bar .subtitle{
+    font-size: 20px;
+    font-weight: bold;
+}
+#title-bar .option{
+    width:8%;
+    text-align: center;
+    margin: 0;
+    font-size: 15px;
+}
+.option>a{
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+
+/*Menu bar*/
+#menu-bar{
+    display: block;
+    width: 100%;
+    background-color: #7395ae;
+    font-size: 25px;
+    margin-bottom: 20px;
+    padding:0;
+    float: left;
+}
+#menu-bar >ul{
+    margin: 0;
+    list-style: none;
+    float: left;
+    display: block;
+}
+#menu-bar >ul>li{
+    padding: 20px;
+    float: left;
+    display: block;
+    margin: 0;
+}
+#menu-bar >ul>li:hover{
+    background-color: #557a95;
+}
+
+#menu-bar >ul>li>a{
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+
+/*Main*/
+.main ul{
+    list-style: none;
+}
+.main ul>li{
+    padding: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    display: block;
+}
+.main ul>li>a{
+    font-weight: normal;
+    font-style: italic;
+}
+.msg{
+    margin: 10px 0;
+}
+.pics{
+    padding: 30px;
+    width: 100%;
+
+}
+.pics .picframe{
+    padding: 2%;
+    width: 25%;
+    display: inline-block;
+    float: left;
+    border: 1px solid #ccc!important;
+    background-color: darkgray;
+    border-radius: 15px;
+    text-align: center;
+    margin: 10px 1%;
+}
+.pic img{
+    width: 80%;
+}
+.cap{
+    font-style: italic;
+}
+
+
+/*photo*/
+#album{
+    font-size: 30px;
+    font-weight: bold;
+    margin-left: 50px;
+}
+#album >ul{
+    margin-top: 5px;
+}
+.photo #photoButtoms{
+    width: 100%;
+    margin: 100px 0;
+}
+#photoButtoms div{
+    width: 24%;
+    text-align: center;
+    float: none;
+    display: inline-block;
+}
+#photoButtoms div>button{
+    padding: 15px;
+    height: 60px;
+    font-size: 20px;
+    background-color: #7395ae;
+    border: none;
+    border-radius: 5px;
+}
+#photoButtoms div>button:hover{
+    background-color: #557a95;
+}
+
+.uploadPhoto{
+    font-size: 20px;
+    float:left;
+}
+.uploadPhoto div{
+    width: inherit;
+    display: block;
+    margin: 15px;
+}
+
+.addition div{
+    text-align: left;
+}
+.addition input[type='submit']{
+    width: 30%;
+}
+.addition input[type='text']{
+    width: 60%;
+}

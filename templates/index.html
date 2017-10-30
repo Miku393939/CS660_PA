@@ -2,18 +2,69 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>CS660 Project</title>
+    <title>SHARESHARE</title>
+    <link rel="stylesheet" href="../static/static.css">
 </head>
-<body>
-    <div>
-        <form>
-            User Name:<br>
-            <input type = "text" name = "username"><br>
-            Password:<br>
-            <input type = "password" name = "password">
-            <input type = "submit" name = "submit">
-
-        </form>
+    <div id="title-bar">
+        <div class="title">SHARESHARE
+            <div class="subtitle">Home</div>
+        </div>
+        <div id="login" class="option">
+        <a href={{ url_for("login") }}>Login</a>
+        </div>
+        <div id="register" class="option">
+            <a href={{ url_for("register") }}>Register</a>
+        </div>
+        <div id="logout" class="option">
+            <a href={{ url_for("logout") }}>Log-out</a>
+        </div>
     </div>
+    <div id="menu-bar">
+        <ul>
+            <li>
+                <a href={{ url_for("index") }}>Home</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("my_photo") }}>My Photos</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>Friends</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("my_profile") }}>My Profile</a>
+            </li>
+        </ul>
+    </div>
+    <div class="main">
+        <div class="pics">
+            {% for pic in pics %}
+                <div class="picframe">
+                    <div class="pic">
+                        <img src="{{ pic[1] }}" alt="{{ pic[0] }}" width="inherit" height="300">
+                        <div class="cap">{% print(pic[3]) %}: {% print(pic[2]) %}</div>
+                        <div class="addition">
+                            <div>
+                                <form>
+                                    <input type = "submit" name = "like" value="Like">
+                                    <div>{{ like }} likes</div>
+                                </form>
+                            </div>
+                            <div>
+                                <form>
+                                    <input type = "submit" name = "submit" value="Comment">
+                                    <input type="text" name="comment"/>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
 </body>
 </html>

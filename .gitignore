@@ -1,6 +1,8 @@
 
 \.idea/workspace\.xml
 
+*.iml
+
 \.idea/misc\.xml
 
-\.idea/CS660_PA\.iml
+\.idea/modules\.xml

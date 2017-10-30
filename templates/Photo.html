@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>SHARESHARE</title>
-    <link rel="stylesheet" href="../static/static.css">
+    <link rel="stylesheet" href="/static/static.css">
 </head>
 <body>
     <div id="title-bar">
         <div class="title">SHARESHARE
-            <div class="subtitle">Register</div>
+            <div class="subtitle">My Photos</div>
         </div>
         <div id="login" class="option">
         <a href={{ url_for("login") }}>Login</a>
@@ -38,25 +38,28 @@
                 <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
         </ul>
-
     </div>
-    <hr/>
-    <form action = "{{ url_for('register_user') }}" method="post">
-        Email:<br>
-        <input type = "text" name = "email"><br>
-        Password:<br>
-        <input type = "password" name = "password"><br>
-        First name:<br>
-        <input type = "text" name = "fname"><br>
-        Last name:<br>
-        <input type = "text" name = "lname"><br>
-        Date of birth: (yyyy/mm/dd)<br>
-        <input type = "text" name = "dob"><br>
-        Hometown:<br>
-        <input type = "text" name = "hometown"><br>
-        Gender:<br>
-        <input type = "text" name = "gender"><br>
-        <input type = "submit" name = "submit">
-    </form>
+
+    <div class="main photo">
+        <div id="album">Albums:
+            <ul id="album-list">
+                {% for album in alist %}
+                    <li>{{ album }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div id="photoButtoms">
+            <div></div>
+            <div>
+                <button id="upload" onclick="location.href={{ url_for("upload_file") }}">Upload Photo</button>
+            </div>
+            <div>
+                <button id="createAlbum" onclick="location.href={{ url_for("create_album") }}">Create New Album</button>
+            </div>
+            <div></div>
+        </div>
+    </div>
+
 </body>
+
 </html>

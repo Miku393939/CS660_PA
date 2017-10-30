@@ -8,7 +8,7 @@
 <body>
     <div id="title-bar">
         <div class="title">SHARESHARE
-            <div class="subtitle">Register</div>
+            <div class="subtitle">Friends</div>
         </div>
         <div id="login" class="option">
         <a href={{ url_for("login") }}>Login</a>
@@ -40,23 +40,31 @@
         </ul>
 
     </div>
+
+
+    Your Friends are:
     <hr/>
-    <form action = "{{ url_for('register_user') }}" method="post">
-        Email:<br>
-        <input type = "text" name = "email"><br>
-        Password:<br>
-        <input type = "password" name = "password"><br>
-        First name:<br>
-        <input type = "text" name = "fname"><br>
-        Last name:<br>
-        <input type = "text" name = "lname"><br>
-        Date of birth: (yyyy/mm/dd)<br>
-        <input type = "text" name = "dob"><br>
-        Hometown:<br>
-        <input type = "text" name = "hometown"><br>
-        Gender:<br>
-        <input type = "text" name = "gender"><br>
+    {% for my_friends in friends_list %}
+    {% print(my_friends[0])%}
+        <br/>
+    {% endfor %}
+    <hr/>
+    <h1>Add Friend</h1>
+    <hr/>
+    
+    <form action = "{{ url_for('friend_add') }}" method="post">
+        Friend id:<br>
+        <input type = "text" name = "friend_id"><br>
         <input type = "submit" name = "submit">
     </form>
+    <hr/>
+    Your Recommanded friends are:
+    <hr/>
+    {% for recom_friend in recommanded_friend_list %}
+    {% print(recom_friend[0]) %}
+        <br/>
+    {% endfor %}
+    <hr/>
+
 </body>
 </html>

@@ -8,7 +8,7 @@
 <body>
     <div id="title-bar">
         <div class="title">SHARESHARE
-            <div class="subtitle">Register</div>
+            <div class="subtitle">My Profile</div>
         </div>
         <div id="login" class="option">
         <a href={{ url_for("login") }}>Login</a>
@@ -38,25 +38,22 @@
                 <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
         </ul>
-
     </div>
-    <hr/>
-    <form action = "{{ url_for('register_user') }}" method="post">
-        Email:<br>
-        <input type = "text" name = "email"><br>
-        Password:<br>
-        <input type = "password" name = "password"><br>
-        First name:<br>
-        <input type = "text" name = "fname"><br>
-        Last name:<br>
-        <input type = "text" name = "lname"><br>
-        Date of birth: (yyyy/mm/dd)<br>
-        <input type = "text" name = "dob"><br>
-        Hometown:<br>
-        <input type = "text" name = "hometown"><br>
-        Gender:<br>
-        <input type = "text" name = "gender"><br>
-        <input type = "submit" name = "submit">
-    </form>
+    <div class="main">
+        <h2>{% print(msg) %}</h2>
+        <div id="myprofile">
+            {% if loggedin  %}
+                <ul>
+                <li>First Name: <a>{% print(profile[6]) %}</a></li>
+                <li>Last Name: <a>{% print(profile[7]) %}</a></li>
+                <li>Email: <a>{% print(profile[2]) %}</a></li>
+                <li>Gender: <a>{% print(profile[1]) %}</a></li>
+                <li>Date of Birth: <a>{% print(profile[4]) %}</a></li>
+                <li>Hometown: <a>{% print(profile[5]) %}</a></li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+
 </body>
 </html>
