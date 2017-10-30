@@ -52,7 +52,7 @@ def index():
 def isEmailUnique(email):
     # use this to check if a email has already been registered
     cursor = conn.cursor()
-    if cursor.execute("SELECT email FROM User WHERE email = email"):
+    if cursor.execute("SELECT email FROM User WHERE email = '{0}'".format(email)):
         # this means there are greater than zero entries with that email
         return False
     else:
@@ -94,7 +94,7 @@ def register_user():
     cursor = conn.cursor()
     test = isEmailUnique(email)
 
-    if 1:
+    if test:
         print(cursor.execute("INSERT INTO User (fname,lname,email,dob,hometown,gender,password) "
                              "VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}')".format(fname, lname, email, dob,
                                                                                          hometown, gender, password)))
@@ -114,7 +114,7 @@ def register_user():
         return render_template('index.html', name=fname, message='Account Created!')
     else:
         print("couldn't find all tokens")
-        return flask.redirect(flask.url_for('index'))
+        return render_template("error.html")
 
 
 def createDefaultAlbum(uid, album_name):
@@ -164,7 +164,11 @@ def friend_add():
 @app.route('/friendship', methods=['GET'])
 @flask_login.login_required
 def friend():
-    return render_template("friendship.html")
+    cursor = conn.cursor()
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    cursor.execute("select email from user where uid in(select uid2 from friendship where uid1 = '{0}')".format(uid))
+    friends_list = cursor.fetchall()
+    return render_template("friendship.html",friends_list = friends_list)
 
 
 
@@ -206,10 +210,13 @@ def getUsersPhotos(uid):
 
 def getUserIdFromEmail(email):
     cursor = conn.cursor()
-    cursor.execute("SELECT UID FROM User WHERE email = email")
+    cursor.execute("SELECT UID FROM User WHERE email = '{0}'".format(email))
     return cursor.fetchone()[0]
 
-
+@app.route('/Logout')
+def logout():
+    flask_login.logout_user()
+    return render_template('index.html')
 
 
 
