@@ -5,7 +5,13 @@
     <title>Title</title>
 </head>
 <body>
+    Your Friends are:
+    <hr/>
+    {% print(friends_list) %}
+    <hr/>
     <h1>Add Friend</h1>
+    <hr/>
+    
     <form action = "{{ url_for('friend_add') }}" method="post">
         Friend id:<br>
         <input type = "text" name = "friend_id"><br>
