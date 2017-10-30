@@ -11,6 +11,8 @@ app = Flask(__name__)
 app.secret_key = "bakakitty"
 mysql = MySQL()
 
+
+
 app.config['MYSQL_DATABASE_USER'] = 'root'
 app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
@@ -26,11 +28,12 @@ cursor = conn.cursor()
 cursor.execute("SELECT email FROM User")
 users = cursor.fetchall()
 
-UPLOAD_FOLDER = 'static/upload'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = '/static/upload/'
+
 
 class User(flask_login.UserMixin):
     pass
+
 
 def getUserList():
     cursor = conn.cursor()
@@ -49,7 +52,12 @@ def user_loader(email):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    cursor = conn.cursor()
+    cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email FROM album as a"
+                   " join photo as p on a.aid = p.aid"
+                   " join user as u on a.uid = u.uid")
+    pics = cursor.fetchall()
+    return render_template('index.html', pics=pics)
 
 
 @app.route("/register/", methods=['GET'])

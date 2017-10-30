@@ -5,7 +5,6 @@
     <title>SHARESHARE</title>
     <link rel="stylesheet" href="../static/static.css">
 </head>
-<body>
     <div id="title-bar">
         <div class="title">SHARESHARE
             <div class="subtitle">Home</div>
@@ -38,7 +37,20 @@
                 <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
         </ul>
+    </div>
+    <div class="main">
+        <div class="pics">
+            {% for pic in pics %}
+                <div class="picframe">
+                    <div class="pic">
+                        <img src="{{ pic[1] }}" alt="{{ pic[0] }}" width="inherit" height="360">
+                        <div class="cap">{% print(pic[3]) %}: {% print(pic[2]) %}</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
 
     </div>
+
 </body>
 </html>

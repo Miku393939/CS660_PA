@@ -87,6 +87,28 @@ body{
 .msg{
     margin: 10px 0;
 }
+.pics{
+    padding: 30px;
+    width: 100%;
+}
+.pics .picframe{
+    padding: 2%;
+    width: 25%;
+    display: inline-block;
+    float: left;
+    border: 1px solid #ccc!important;
+    background-color: darkgray;
+    border-radius: 15px;
+    text-align: center;
+    margin: 10px 2%;
+}
+.pic img{
+    width: 75%;
+}
+.cap{
+    font-style: italic;
+}
+
 
 /*photo*/
 #album{
