@@ -1,7 +1,8 @@
 import flask
-from flask import Flask, Response, request, render_template, redirect, url_for
+from flask import Flask,  flash, Response, request, render_template, redirect, url_for
 from flaskext.mysql import MySQL
 import flask.ext.login as flask_login
+from werkzeug.utils import secure_filename
 
 # for image uploading
 # from werkzeug import secure_filename
@@ -28,7 +29,9 @@ cursor = conn.cursor()
 cursor.execute("SELECT email FROM User")
 users = cursor.fetchall()
 
-UPLOAD_FOLDER = '/static/upload/'
+UPLOAD_FOLDER = '/static/upload'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 class User(flask_login.UserMixin):
@@ -161,27 +164,39 @@ def friend():
     return render_template("friendship.html", friends_list=friends_list)
 
 
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
 @app.route('/upload/', methods=['GET', 'POST'])
 @flask_login.login_required
 def upload_file():
     if request.method == 'POST':
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('my_photo'))
+
         uid = getUserIdFromEmail(flask_login.current_user.id)
         aid = 0
-        imgfile = request.files['photo']
+
         caption = request.form.get('caption')
-        imgtype = imgfile.mimetype.split("/")
+        imgtype = file.mimetype.split("/")
         print(caption)
-        photo_data = "static/upload/"+caption + '.' + imgtype[1]
+        photo_data = "/static/upload/"+caption + '.' + imgtype[1]
         print(photo_data)
         cursor = conn.cursor()
-
-        cursor.execute("INSERT INTO Photo (data, aid, caption) VALUES (%s, %s, %s)",
-                       (photo_data, aid, caption))
-
         conn.commit()
-        imgfile.save(os.path.join(app.config['UPLOAD_FOLDER'], caption + '.' + imgtype[1]))
-        return render_template('hello.html', name=flask_login.current_user.id, message='Photo uploaded!',
-                               photos=getUsersPhotos(uid))
+
+
     # The method is GET so we return a  HTML form to upload the a photo.
     else:
         return render_template('upload.html')
