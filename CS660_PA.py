@@ -391,12 +391,12 @@ def youmayalsolike():
 def contribution():
     cursor = conn.cursor()
     cursor.execute("SELECT UID,COUNT(*) FROM COMMENT"
-                        "GROUP BY UID"
-                            "ORDER BY COUNT(*) DESC")
+                        " GROUP BY UID"
+                            " ORDER BY COUNT(*) DESC")
     comment_contribution = cursor.fetchall()
     cursor.execute("SELECT UID,COUNT(*) FROM ALBUM a JOIN PHOTO p ON a.pid = p.pid"
-                        "GROUP BY UID"
-                            "ORDER BY COUNT(*) DESC")
+                        " GROUP BY UID"
+                            " ORDER BY COUNT(*) DESC")
     photo_contribution = cursor.fetchall()
     render_template('contribution.html', comment_contribution = comment_contribution, photo_contribution = photo_contribution)
 
