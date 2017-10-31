@@ -394,11 +394,23 @@ def contribution():
                         " GROUP BY UID"
                             " ORDER BY COUNT(*) DESC")
     comment_contribution = cursor.fetchall()
-    cursor.execute("SELECT UID,COUNT(*) FROM ALBUM a JOIN PHOTO p ON a.pid = p.pid"
+    cursor.execute("SELECT UID,COUNT(*) FROM ALBUM JOIN PHOTO"
                         " GROUP BY UID"
                             " ORDER BY COUNT(*) DESC")
     photo_contribution = cursor.fetchall()
-    render_template('contribution.html', comment_contribution = comment_contribution, photo_contribution = photo_contribution)
+    return render_template('contribution.html', comment_contribution = comment_contribution, photo_contribution = photo_contribution)
+
+
+@app.route('/searchComment', methods=['GET', 'POST'])
+def searchComment():
+    kw = request.form.get('keyword')
+
+    cursor = conn.cursor()
+    cursor.execute("select count(*), u.fname from comment as c join user as u on c.uid=u.uid where content = '{0}' group by c.uid order by count(*) DESC".format(kw))
+    ulist = cursor.fetchall()
+
+    return render_template('searchComment.html', ulist=ulist, kw=kw)
+
 
 @app.route('/Logout')
 def logout():

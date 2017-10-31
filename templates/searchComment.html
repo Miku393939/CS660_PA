@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>SHARESHARE</title>
-    <link rel="stylesheet" href="/static/static.css">
+    <link rel="stylesheet" href="../static/static.css">
 </head>
-<body>
     <div id="title-bar">
         <div class="title">SHARESHARE
-            <div class="subtitle">My Photos</div>
+            <div class="subtitle">Comment Searching</div>
         </div>
         <div id="login" class="option">
         <a href={{ url_for("login") }}>Login</a>
@@ -48,33 +47,13 @@
 
         </ul>
     </div>
-
-    <div class="main photo">
-        <div id="album">Albums:
-            <ul id="album-list">
-                {% for album in alist %}
-                    <li>
-                        <form action="{{ url_for('albumDetail') }}" method="post">
-                            <input class="aList" type="submit" value="{{ album[0] }}">
-                            <input type="hidden" value="{{ album[1] }}" name="aid">
-                        </form>
-
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <div id="photoButtoms">
-            <div></div>
-            <div>
-                <button id="upload" onclick="location.href={{ url_for("upload_file") }}">Upload Photo</button>
-            </div>
-            <div>
-                <button id="createAlbum" onclick="location.href={{ url_for("create_album") }}">Create New Album</button>
-            </div>
-            <div></div>
-        </div>
+    <div class="main">
+        <ol>
+            {% for item in ulist %}
+                <li>{{ item[1] }} has {{ item[0] }} {{ kw }} comment(s).</li>
+            {% endfor %}
+        </ol>
     </div>
 
 </body>
-
 </html>

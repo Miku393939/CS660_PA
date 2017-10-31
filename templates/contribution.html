@@ -37,11 +37,42 @@
                 <a href={{ url_for("my_profile") }}>My Profile</a>
             </li>
 
+            <li>
+                <a href={{ url_for("youmayalsolike") }}>You May Also Like</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("contribution") }}>Contribution</a>
+            </li>
+
         </ul>
     </div>
     <div class="main">
         <ol>
-            {% for comment_user in comment_contribution %}
+            UID OF COMMENT CONTRIBUTION:
+            {% for contribute1 in comment_contribution %}
+            <li>
+                {% print(contribute1[0]) %}
+                <br/>
+                <br/>
+            </li>
+
+
+    {% endfor %}
+        </ol>
+    <hr/>
+        <ol>
+            UID OF PHOTO CONTRIBUTION:
+            {% for contribute2 in photo_contribution %}
+            <li>
+                {% print(contribute2[0]) %}
+                <br/>
+                <br/>
+            </li>
+
+
+    {% endfor %}
+
         </ol>
 
     </div>
