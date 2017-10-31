@@ -60,10 +60,14 @@ def index():
     cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email, count(l.pid) FROM album as a"
                    " join photo as p on a.aid = p.aid"
                    " join user as u on a.uid = u.uid"
+                   " join user as u2 on a.uid = u.uid"
                    " left join liketable as l on p.pid = l.pid"
                    " group by p.pid")
     pics = cursor.fetchall()
+    return render_template('index.html', pics=pics, like="")
     return render_template('index.html', pics=pics)
+
+
 
 
 @app.route("/register/", methods=['GET'])
@@ -197,11 +201,41 @@ def upload_file():
             caption = request.form.get('caption')
             aid = request.form.get('album')
             path= "/static/upload/"+filename
+            tag1 = request.form.get('tag1')
+            tag2 = request.form.get('tag2')
 
             cursor = conn.cursor()
             query = "INSERT INTO photo (caption,data,aid)""VALUES ('{0}','{1}','{2}')".format(caption, path, aid)
             cursor.execute(query)
             conn.commit()
+
+
+
+            cursor.execute("select COUNT(*) from TAG where HASHTAG = '{0}'".format(tag1))
+            tag1_number = cursor.fetchone()
+            if tag1_number[0] == 0:
+                cursor.execute("INSERT INTO TAG (HASHTAG)""VALUES ('{0}')".format(tag1))
+                conn.commit()
+
+
+            cursor.execute("select pid from PHOTO where DATA = '{0}'".format(path))
+            pid_current = cursor.fetchone()
+            cursor.execute("INSERT INTO ASSOCIATE (PID,HASHTAG)""VALUES ('{0}','{1}')".format(pid_current[0],tag1))
+            conn.commit()
+
+
+            cursor.execute("select COUNT(*) from TAG where HASHTAG = '{0}'".format(tag2))
+            tag2_number = cursor.fetchone()
+            if tag2_number[0] == 0:
+                cursor.execute("INSERT INTO TAG (HASHTAG)""VALUES ('{0}')".format(tag2))
+                conn.commit()
+            cursor.execute("INSERT INTO ASSOCIATE (PID,HASHTAG)""VALUES ('{0}','{1}')".format(pid_current[0], tag2))
+            conn.commit()
+
+
+
+
+
 
             return redirect(url_for('my_photo'))
 
@@ -284,7 +318,9 @@ def picDetail():
                    " left join user as u2 on c.uid = u2.uid"
                    " where p.pid = '{0}'".format(pid))
     pic = cursor.fetchall()
-    return render_template('singlePhoto.html', pic=pic)
+    cursor.execute("select HASHTAG from ASSOCIATE where pid = '{0}'".format(pid))
+    tags_of_pic = cursor.fetchall()
+    return render_template('singlePhoto.html', pic=pic, tags_of_pic = tags_of_pic)
 
 
 @app.route('/commentPic', methods=['GET', 'POST'])
@@ -341,7 +377,30 @@ def my_profile():
         msg = "Hello, you are not logged in yet!"
         return render_template('MyProfile.html', loggedin=False, msg=msg)
 
+@app.route('/youmayalsolike', methods=['GET'])
+@flask_login.login_required
+def youmayalsolike():
+    uid = getUserIdFromEmail(flask_login.current_user.id)
+    cursor = conn.cursor()
+    cursor.execute(" SELECT PID, DATA from PHOTO where PID in (SELECT PID FROM ASSOCIATE WHERE HASHTAG IN ("
+                        "SELECT HASHTAG FROM ASSOCIATE WHERE PID IN ( "
+                            "SELECT PID FROM PHOTO WHERE AID IN ("
+                                "SELECT AID FROM ALBUM WHERE UID = '{0}'))))".format(uid))
+    pics = cursor.fetchall()
+    return render_template('youmayalsolike.html', pics = pics)
 
+@app.route('/contribution', methods=['GET'])
+def contribution():
+    cursor = conn.cursor()
+    cursor.execute("SELECT UID FROM COMMENT"
+                        "GROUP BY UID"
+                            "ORDER BY COUNT(*) DESC")
+    comment_contribution = cursor.fetchall()
+    cursor.execute("SELECT UID FROM ALBUM a JOIN PHOTO p ON a.pid = p.pid"
+                        "GROUP BY UID"
+                            "ORDER BY COUNT(*) DESC")
+    photo_contribution = cursor.fetchall()
+    render_template('contribution.html', comment_contribution = comment_contribution, photo_contribution = photo_contribution)
 
 @app.route('/Logout')
 def logout():

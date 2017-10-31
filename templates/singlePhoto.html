@@ -44,6 +44,12 @@
             <div class="pic">
                 <img src="{{ pic[0][1] }}" alt="{{ pic[0][0] }}" width="inherit" height="500">
                 <div class="cap">{% print(pic[0][3]) %}: {% print(pic[0][2]) %}</div>
+                <hr/>
+                Tags of this photo:
+                {% for tags in tags_of_pic %}
+                    {% print(tags[0] + " ") %}
+                {% endfor %}
+                <hr/>
                 <div class="addition">
                     <div>
                         <form action="{{ url_for('commentPic') }}" method="post">
