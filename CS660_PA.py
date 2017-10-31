@@ -217,13 +217,60 @@ def upload_file():
 def my_photo():
     current_user = flask_login.current_user
     if current_user.is_authenticated:
-        albumlist = getUsersAlbums(getUserIdFromEmail(current_user.id))
+        albumlist = getUsersAlbumsid(getUserIdFromEmail(current_user.id))
         alist = []
         for i in range(len(albumlist)):
-            alist.append(albumlist[i][0])
+            alist.append(albumlist[i])
         return render_template('Photo.html', alist=alist)
     else:
         return render_template('login.html')
+
+
+@app.route('/albumDetail', methods=['GET', 'POST'])
+def albumDetail():
+    aid = request.form.get('aid')
+    cursor = conn.cursor()
+    cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email FROM album as a"
+                   " join photo as p on a.aid = p.aid"
+                   " join user as u on a.uid = u.uid"
+                   " where p.aid = '{0}'".format(aid))
+    pic = cursor.fetchall()
+
+    return render_template('albumDetail.html', pic=pic,aid=aid)
+
+def deletePic(pid):
+    cursor = conn.cursor()
+    cursor.execute("Delete from photo where pid = '{0}'".format(pid))
+    cursor.execute("Delete from comment where pid = '{0}'".format(pid))
+    cursor.execute("Delete from liketable where pid = '{0}'".format(pid))
+    conn.commit()
+
+def deletePicwithAid(aid):
+    cursor = conn.cursor()
+    cursor.execute("select pid from photo where aid = '{0}'".format(aid))
+    pids = cursor.fetchall()
+    for pid in pids:
+        deletePic(pid)
+
+def deleteAlb(aid):
+    cursor = conn.cursor()
+    cursor.execute("Delete from album where aid = '{0}'".format(aid))
+    conn.commit()
+
+@app.route('/deleteAlbum', methods=['GET', 'POST'])
+def deleteAlbum():
+    aid = request.form.get('aid')
+    deletePicwithAid(aid)
+    deleteAlb(aid)
+    return redirect(url_for('my_photo'))
+
+
+@app.route('/deletePhoto', methods=['GET', 'POST'])
+def deletePhoto():
+    pid = request.form.get('pid')
+    deletePic(pid)
+
+    return redirect(url_for('my_photo'))
 
 
 @app.route('/singlePhoto', methods=['GET', 'POST'])
@@ -252,6 +299,7 @@ def commentPic():
                 cursor = conn.cursor()
                 cursor.execute("INSERT INTO comment(uid,pid,content) VALUES ('{0}','{1}','{2}')".format(uid, pid, content))
                 conn.commit()
+
 
         return redirect(url_for('index'))
 

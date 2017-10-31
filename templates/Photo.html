@@ -44,7 +44,13 @@
         <div id="album">Albums:
             <ul id="album-list">
                 {% for album in alist %}
-                    <li>{{ album }}</li>
+                    <li>
+                        <form action="{{ url_for('albumDetail') }}" method="post">
+                            <input class="aList" type="submit" value="{{ album[0] }}">
+                            <input type="hidden" value="{{ album[1] }}" name="aid">
+                        </form>
+
+                    </li>
                 {% endfor %}
             </ul>
         </div>

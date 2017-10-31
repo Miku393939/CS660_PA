@@ -92,6 +92,13 @@ body{
     width: 100%;
 
 }
+.single{
+    text-align: center;
+    width: 30%;
+    margin-left: 35%;
+}
+
+
 .pics .picframe{
     padding: 2%;
     width: 25%;
@@ -112,6 +119,11 @@ body{
 
 
 /*photo*/
+.aList{
+    width: 150px;
+    font-weight: bold;
+    font-size: 20px;
+}
 #album{
     font-size: 30px;
     font-weight: bold;
