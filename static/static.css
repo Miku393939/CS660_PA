@@ -154,10 +154,15 @@ body{
 
 .addition div{
     text-align: left;
+    display: inline-block;
+    width: 100%;
+}
+.addition form>div{
+    width: 60%;
 }
 .addition input[type='submit']{
     width: 30%;
 }
 .addition input[type='text']{
-    width: 60%;
+    width: 65%;
 }

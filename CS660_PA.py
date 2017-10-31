@@ -16,7 +16,7 @@ mysql = MySQL()
 
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'Helloworld108'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -57,11 +57,13 @@ def user_loader(email):
 @app.route('/')
 def index():
     cursor = conn.cursor()
-    cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email FROM album as a"
+    cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email, count(l.pid) FROM album as a"
                    " join photo as p on a.aid = p.aid"
-                   " join user as u on a.uid = u.uid")
+                   " join user as u on a.uid = u.uid"
+                   " left join liketable as l on p.pid = l.pid"
+                   " group by p.pid")
     pics = cursor.fetchall()
-    return render_template('index.html', pics=pics, like="")
+    return render_template('index.html', pics=pics)
 
 
 @app.route("/register/", methods=['GET'])
@@ -166,7 +168,7 @@ def friend():
     #     print(friend[0])
     cursor.execute("select DISTINCT email from user where uid in("
                        "select DISTINCT uid2 from friendship where uid1 in ("
-                            "SELECT DISTINCT uid2 from friendship where uid1 = '{0}') UNION SELECT uid1 FROM friendship WHERE uid2 in (SELECT DISTINCT uid2 FROM friendship where uid1 = '{1}')) and uid <> '{2}'".format(uid,uid,uid))
+                            "SELECT DISTINCT uid2 from friendship where uid1 = '{0}') UNION SELECT uid1 FROM friendship WHERE uid2 in (SELECT DISTINCT uid2 FROM friendship where uid1 = '{0}')) and uid not IN (SELECT DISTINCT uid2 FROM friendship where uid1 = '{0}' UNION SELECT DISTINCT uid1 FROM friendship where uid1 = '{0}')".format(uid))
     recommanded_friend_list = cursor.fetchall()
 
     return render_template("friendship.html", friends_list=friends_list,recommanded_friend_list = recommanded_friend_list)
@@ -220,6 +222,57 @@ def my_photo():
         for i in range(len(albumlist)):
             alist.append(albumlist[i][0])
         return render_template('Photo.html', alist=alist)
+    else:
+        return render_template('login.html')
+
+
+@app.route('/singlePhoto', methods=['GET', 'POST'])
+def picDetail():
+    pid = request.form.get('pid')
+    cursor = conn.cursor()
+    cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email, c.content, u2.email FROM album as a"
+                   " join photo as p on a.aid = p.aid"
+                   " join user as u on a.uid = u.uid"
+                   " left join comment as c on p.pid = c.pid"
+                   " left join user as u2 on c.uid = u2.uid"
+                   " where p.pid = '{0}'".format(pid))
+    pic = cursor.fetchall()
+    return render_template('singlePhoto.html', pic=pic)
+
+
+@app.route('/commentPic', methods=['GET', 'POST'])
+def commentPic():
+    current_user = flask_login.current_user
+    if current_user.is_authenticated:
+        if request.method == "POST":
+            uid = getUserIdFromEmail(current_user.id)
+            pid = request.form.get("pid")
+            content = request.form.get('content')
+            if content:
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO comment(uid,pid,content) VALUES ('{0}','{1}','{2}')".format(uid, pid, content))
+                conn.commit()
+
+        return redirect(url_for('index'))
+
+    else:
+        return render_template('login.html')
+
+@app.route('/likePic', methods=['GET', 'POST'])
+def likePic():
+    current_user = flask_login.current_user
+    if current_user.is_authenticated:
+        if request.method == "POST":
+            uid = getUserIdFromEmail(current_user.id)
+            pid = request.form.get("pid")
+
+            cursor = conn.cursor()
+            if not cursor.execute("SELECT * from liketable where uid='{0}' and pid='{1}'".format(uid, pid)):
+                cursor.execute("INSERT INTO liketable(uid,pid) VALUES ('{0}','{1}')".format(uid, pid))
+                conn.commit()
+
+        return redirect(url_for('index'))
+
     else:
         return render_template('login.html')
 

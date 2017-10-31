@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SHARESHARE</title>
+    <link rel="stylesheet" href="../static/static.css">
+</head>
+<body>
+    <div id="title-bar">
+        <div class="title">SHARESHARE
+            <div class="subtitle">Details</div>
+        </div>
+        <div id="login" class="option">
+        <a href={{ url_for("login") }}>Login</a>
+        </div>
+        <div id="register" class="option">
+            <a href={{ url_for("register") }}>Register</a>
+        </div>
+        <div id="logout" class="option">
+            <a href={{ url_for("logout") }}>Log-out</a>
+        </div>
+    </div>
+    <div id="menu-bar">
+        <ul>
+            <li>
+                <a href={{ url_for("index") }}>Home</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("my_photo") }}>My Photos</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("friend") }}>Friends</a>
+            </li>
+
+            <li>
+                <a href={{ url_for("my_profile") }}>My Profile</a>
+            </li>
+        </ul>
+    </div>
+    <div class="main single">
+        <div class="picframe">
+            <div class="pic">
+                <img src="{{ pic[0][1] }}" alt="{{ pic[0][0] }}" width="inherit" height="500">
+                <div class="cap">{% print(pic[0][3]) %}: {% print(pic[0][2]) %}</div>
+                <div class="addition">
+                    <div>
+                        <form action="{{ url_for('commentPic') }}" method="post">
+                            <input type = "submit" name = "submit" value="Comment">
+                            <input type="text" name="content"/>
+                            <input type="hidden" value="{{ pic[0][0] }}" name="pid">
+                        </form>
+                    </div>
+                    <div>
+                        {% for comment in pic %}
+                            <div>
+                                {% print(comment[5]) %}: {% print(comment[4]) %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
