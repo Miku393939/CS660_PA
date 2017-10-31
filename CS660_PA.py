@@ -60,11 +60,9 @@ def index():
     cursor.execute("SELECT p.PID, p.DATA, p.CAPTION, u.email, count(l.pid) FROM album as a"
                    " join photo as p on a.aid = p.aid"
                    " join user as u on a.uid = u.uid"
-                   " join user as u2 on a.uid = u.uid"
                    " left join liketable as l on p.pid = l.pid"
                    " group by p.pid")
     pics = cursor.fetchall()
-    return render_template('index.html', pics=pics, like="")
     return render_template('index.html', pics=pics)
 
 
@@ -392,11 +390,11 @@ def youmayalsolike():
 @app.route('/contribution', methods=['GET'])
 def contribution():
     cursor = conn.cursor()
-    cursor.execute("SELECT UID FROM COMMENT"
+    cursor.execute("SELECT UID,COUNT(*) FROM COMMENT"
                         "GROUP BY UID"
                             "ORDER BY COUNT(*) DESC")
     comment_contribution = cursor.fetchall()
-    cursor.execute("SELECT UID FROM ALBUM a JOIN PHOTO p ON a.pid = p.pid"
+    cursor.execute("SELECT UID,COUNT(*) FROM ALBUM a JOIN PHOTO p ON a.pid = p.pid"
                         "GROUP BY UID"
                             "ORDER BY COUNT(*) DESC")
     photo_contribution = cursor.fetchall()
