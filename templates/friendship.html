@@ -44,10 +44,17 @@
 
     Your Friends are:
     <hr/>
-    {% for my_friends in friends_list %}
-    {% print(my_friends[0])%}
-        <br/>
-    {% endfor %}
+    <ol>
+            {% for my_friends in friends_list %}
+                <li>
+                {% print(my_friends[0])%}
+                <br/>
+                <br/>
+                </li>
+
+            {% endfor %}
+
+    </ol>
     <hr/>
     <h1>Add Friend</h1>
     <hr/>
@@ -60,10 +67,18 @@
     <hr/>
     Your Recommanded friends are:
     <hr/>
-    {% for recom_friend in recommanded_friend_list %}
-    {% print(recom_friend[0]) %}
-        <br/>
+    <ol>
+        {% for recom_friend in recommanded_friend_list %}
+            <li>
+                {% print(recom_friend[0]) %}
+                <br/>
+                <br/>
+            </li>
+
+
     {% endfor %}
+    </ol>
+
     <hr/>
 
 </body>
