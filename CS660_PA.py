@@ -166,7 +166,7 @@ def friend():
     #     print(friend[0])
     cursor.execute("select DISTINCT email from user where uid in("
                        "select DISTINCT uid2 from friendship where uid1 in ("
-                            "SELECT DISTINCT uid2 from friendship where uid1 = '{0}') UNION SELECT uid1 FROM friendship WHERE uid2 in (SELECT DISTINCT uid2 FROM friendship where uid1 = '{1}')) and uid <> '{2}'".format(uid,uid,uid))
+                            "SELECT DISTINCT uid2 from friendship where uid1 = '{0}') UNION SELECT uid1 FROM friendship WHERE uid2 in (SELECT DISTINCT uid2 FROM friendship where uid1 = '{0}')) and uid not IN (SELECT DISTINCT uid2 FROM friendship where uid1 = '{0}' UNION SELECT DISTINCT uid1 FROM friendship where uid1 = '{0}')".format(uid))
     recommanded_friend_list = cursor.fetchall()
 
     return render_template("friendship.html", friends_list=friends_list,recommanded_friend_list = recommanded_friend_list)
