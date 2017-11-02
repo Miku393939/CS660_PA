@@ -16,7 +16,7 @@ mysql = MySQL()
 
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'root'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -63,7 +63,18 @@ def index():
                    " left join liketable as l on p.pid = l.pid"
                    " group by p.pid")
     pics = cursor.fetchall()
-    return render_template('index.html', pics=pics)
+
+
+    #most popular tags
+
+    cursor.execute("Select hashtag from associate group by hashtag order by COUNT(*) DESC")
+    poptags = cursor.fetchall()
+
+
+    #most popular tags
+
+
+    return render_template('index.html', pics=pics, poptags = poptags)
 
 
 
@@ -270,6 +281,20 @@ def albumDetail():
 
     return render_template('albumDetail.html', pic=pic,aid=aid)
 
+#tagdetail
+@app.route('/tagetail', methods=['GET', 'POST'])
+def tagdetail():
+    tid = request.form.get('tagid')
+    cursor = conn.cursor()
+    cursor.execute("SELECT PID, DATA FROM photo where pid in (SELECT pid from associate where hashtag = '{0}')".format(tid))
+    pic = cursor.fetchall()
+
+    return render_template('albumDetail.html', pic = pic)
+#tagdetail
+
+
+
+
 def deletePic(pid):
     cursor = conn.cursor()
     cursor.execute("Delete from photo where pid = '{0}'".format(pid))
@@ -319,6 +344,25 @@ def picDetail():
     cursor.execute("select HASHTAG from ASSOCIATE where pid = '{0}'".format(pid))
     tags_of_pic = cursor.fetchall()
     return render_template('singlePhoto.html', pic=pic, tags_of_pic = tags_of_pic)
+
+
+#addtag
+@app.route('/addtag', methods=['POST'])
+def addtag():
+    tagname = request.form.get('tagname')
+    pid = request.form.get('pid')
+    cursor = conn.cursor()
+    cursor.execute("select COUNT(*) from TAG where HASHTAG = '{0}'".format(tagname))
+    tag1_number = cursor.fetchone()
+    if tag1_number[0] == 0:
+        cursor.execute("INSERT INTO TAG (HASHTAG)""VALUES ('{0}')".format(tagname))
+        conn.commit()
+    cursor.execute("INSERT INTO ASSOCIATE (PID,HASHTAG)""VALUES ('{0}','{1}')".format(pid, tagname))
+    conn.commit()
+    return redirect(url_for('index'))
+#addtag
+
+
 
 
 @app.route('/commentPic', methods=['GET', 'POST'])
@@ -385,6 +429,9 @@ def youmayalsolike():
                             "SELECT PID FROM PHOTO WHERE AID IN ("
                                 "SELECT AID FROM ALBUM WHERE UID = '{0}'))))".format(uid))
     pics = cursor.fetchall()
+
+
+
     return render_template('youmayalsolike.html', pics = pics)
 
 @app.route('/contribution', methods=['GET'])

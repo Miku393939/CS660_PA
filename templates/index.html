@@ -55,6 +55,31 @@
                 <input type="submit" value="Search">
             </form>
         </div>
+
+
+
+
+
+
+        <div>
+            <ol>
+                {% for poptag in poptags %}
+                    <li>
+                    <form action="{{ url_for('tagdetail') }}", method="post">
+                        <input name = "tagid" type="submit" value="{{ poptag[0] }}">
+                    </form>
+                    <br/>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+
+
+
+
+
+
+
         <div class="pics">
             {% for pic in pics %}
                 <div class="picframe">

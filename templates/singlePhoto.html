@@ -59,6 +59,16 @@
                     {% print(tags[0] + " ") %}
                 {% endfor %}
                 <hr/>
+
+                <form action="{{ url_for('addtag') }}", method="post">
+                    <input type="text" name="tagname">
+                    <input type="submit" name="pid" value="{{ pic[0][0] }}">
+
+                </form>
+
+
+
+                <hr/>
                 <div class="addition">
                     <div>
                         <form action="{{ url_for('commentPic') }}" method="post">
