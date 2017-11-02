@@ -90,8 +90,11 @@
                             <div>
                                 <form action="{{ url_for("likePic") }}" method="POST">
                                     <input type = "submit" name = "like" value="Like">
-                                    <div>{% print(pic[4]) %} likes</div>
                                     <input type="hidden" value="{{ pic[0] }}" name="pid">
+                                </form>
+                                <form action="{{ url_for('likeDetail') }}" method="post">
+                                    <input type="submit" value="{% print(pic[4]) %} likes">
+                                    <input value="{{ pic[0] }}" type="hidden" name="pid">
                                 </form>
                             </div>
                             <div>

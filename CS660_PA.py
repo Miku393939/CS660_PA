@@ -16,7 +16,7 @@ mysql = MySQL()
 
 
 app.config['MYSQL_DATABASE_USER'] = 'root'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'war0623'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'Helloworld108'
 app.config['MYSQL_DATABASE_DB'] = 'CS660_PA'
 app.config['MYSQL_DATABASE_HOST'] = '127.0.0.1'
 app.config["DEBUG"] = True
@@ -184,7 +184,12 @@ def friend():
                             "SELECT DISTINCT uid2 from friendship where uid1 = '{0}') UNION SELECT uid1 FROM friendship WHERE uid2 in (SELECT DISTINCT uid2 FROM friendship where uid1 = '{0}')) and uid not IN (SELECT DISTINCT uid2 FROM friendship where uid1 = '{0}' UNION SELECT DISTINCT uid1 FROM friendship where uid1 = '{0}')".format(uid))
     recommanded_friend_list = cursor.fetchall()
 
-    return render_template("friendship.html", friends_list=friends_list,recommanded_friend_list = recommanded_friend_list)
+
+    cursor.execute("select uid, fname, lname from user where not uid= '504'")
+    uList = cursor.fetchall()
+
+    return render_template("friendship.html", friends_list=friends_list,recommanded_friend_list = recommanded_friend_list,
+                           uList=uList)
 
 
 def allowed_file(filename):
@@ -382,7 +387,29 @@ def commentPic():
         return redirect(url_for('index'))
 
     else:
-        return render_template('login.html')
+        if request.method == "POST":
+            uid = '504'
+            pid = request.form.get("pid")
+            content = request.form.get('content')
+            if content:
+                cursor = conn.cursor()
+                cursor.execute("INSERT INTO comment(uid,pid,content) VALUES ('{0}','{1}','{2}')".format(uid, pid, content))
+                conn.commit()
+
+
+        return redirect(url_for('index'))
+
+
+@app.route('/likeDetail', methods=['GET', 'POST'])
+def likeDetail():
+    if request.method == "POST":
+        pid = request.form.get('pid')
+        cursor = conn.cursor()
+        cursor.execute("select u.fname from liketable l"
+                       " join user u on l.uid = u.uid where l.pid='{0}'".format(pid))
+
+        likes = cursor.fetchall()
+        return render_template('likeDetail.html', likes = likes)
 
 @app.route('/likePic', methods=['GET', 'POST'])
 def likePic():
